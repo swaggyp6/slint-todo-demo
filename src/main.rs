@@ -2,9 +2,7 @@ use std::rc::Rc;
 use std::time::Duration;
 
 use slint::Model;
-use slint::ModelRc;
 use slint::PlatformError;
-use slint::SharedString;
 use slint::Timer;
 use slint::VecModel;
 slint::include_modules!();
