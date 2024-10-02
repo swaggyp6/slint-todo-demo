@@ -1,0 +1,29 @@
+[package]
+name = "stk"
+build = "build.rs"
+edition = "2021"
+
+[dependencies]
+chrono = "0.4.38"
+slint = "1.8.0"
+
+
+[build-dependencies]
+slint-build = "1.8.0"
+
+[profile-dev]
+opt-level = 3
+
+
+[profile.release]
+opt-level = 3
+debug = false
+split-debuginfo = '...'
+strip = true
+debug-assertions = false
+overflow-checks = false
+lto = true
+panic = 'unwind'
+incremental = false
+codegen-units = 16
+rpath = false

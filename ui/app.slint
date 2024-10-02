@@ -1,0 +1,194 @@
+import { Button, ScrollView, TabWidget } from "std-widgets.slint";
+
+// #[derive(Ord)]
+export struct ListMaps {
+    id : int,
+    item : string,
+}
+
+export component ItemTodo inherits Rectangle {
+    in-out property <ListMaps> item;
+    in-out property <bool> btn_clicked : false;
+    // width: 360px;
+    // height: 25px;
+    background: #221e1eb7;
+    padding: 3px;
+    border-radius: 5px;
+    border-color: #fff;
+    border-width: 1px;
+
+    txt := Text {
+        width: 100%;
+        height: 100%;
+        vertical-alignment: center;
+        horizontal-alignment: left;
+        font-size: 12px;
+        font-weight: 10;
+        color: #fff;
+        text: @tr("  {}.  {}", item.id, item.item);
+    }
+    touch := TouchArea {
+        clicked => {
+            btn_clicked = !btn_clicked;
+        }
+    }
+    if btn_clicked :Rectangle{
+        // y: parent.y;
+        height: 20px;
+        background: #fff;
+        border-width: 2px;
+        border-radius: 5px;
+        Text {
+            color: #f00;
+            text: item.item;
+        }
+    }
+    states [
+        pressed when touch.pressed :{
+            background : #7332eb;
+            txt.color: #f10909;
+        }
+    ]
+}
+
+
+export component App inherits Window {
+    in-out property <[ListMaps]> todo_lists ;
+    in-out property <string> cur_date : "20241002";
+    in-out property <string> cur_time : "14:00";
+
+    callback addtodo(string);
+    callback cleal_all();
+    width: 250px;
+    height: 800px;
+    default-font-size: 18px;
+    default-font-weight: 10;
+    title: "TODO";
+    background: #141414;
+    VerticalLayout {
+        padding: 2px;
+        spacing: 2px;
+        vertical-stretch: 0.1;
+        x: 0px;
+        y: 5px;
+        height: 30px;
+        width: 100%;
+        date := Rectangle {
+            border-color: #d8b043;
+            height: parent.height/2;
+            width: 100%;
+            Text {
+                color: #ccc6eb;
+                height: 30px;
+                text: cur_date;
+                font-size: 12px;
+            }
+        }
+        time := Rectangle {
+            border-color: #d8b043;
+            height: parent.height/2;
+            width: 100%;
+            Text {
+                color: #ccc6eb;
+                height: 30px;
+                text: cur_time;
+                font-size: 12px;
+            }
+        }
+    }
+    VerticalLayout {
+        y: 30px;
+        HorizontalLayout {
+            height: 30px;
+            width: 100%;
+            padding: 1px;
+            horizontal-stretch: 1;
+            Rectangle {
+                width: 2 * parent.width/3;
+                border-radius: 5px;
+                Rectangle {
+                    border-radius: 5px;
+                    border-width: 2px;
+                    opacity: 0.6;
+                    background: #9797748d;
+                }
+                input := TextInput {
+                    text: "add a new todo";
+                    horizontal-alignment: left;
+                    vertical-alignment: center;
+                    // width: 2 * parent.width/3;
+                    color: #f1d28d;
+                    
+                }
+            }
+            Rectangle {
+                width: 1 * parent.width/3;
+                border-radius: 5px;
+                background: #4a8ceef8;
+                btn := Button {
+                    opacity: 0.2;
+                    width: parent.width;
+                    height: parent.height;
+                    clicked => {
+                        root.addtodo(input.text);
+                        
+                    }
+                }
+                Text {
+                    text: "TODO";
+                    font-size: 10px;
+                    font-weight: 10;
+                    color: #37db5bdc;
+                }
+                states [
+                    pressed when btn.pressed:{
+                        background: #45f89034;
+                    }
+                ]
+            }
+        }
+    }
+    ScrollView {
+        viewport-height: parent.height + 100px;
+        viewport-width: parent.width + 100px;
+        VerticalLayout {
+            y: 65px;
+            width: 100%;
+            alignment: start;
+                for it in todo_lists: ItemTodo{
+                    item:  it;
+                }
+            
+        }
+    }
+    Rectangle {
+        y: parent.height - 30px;
+        background: #f7f2f1a1;
+        border-width: 3px;
+        border-radius: 8px;
+        height: 28px;
+        opacity: 0.7;
+        touch := TouchArea {
+            clicked => {
+                root.cleal_all();
+            }
+        }
+        Text {
+            horizontal-alignment: center;
+            vertical-alignment: center;
+            width: 100%;
+            height: 100%;
+            text: "clear all";
+            font-size: 12px;
+            color: #59eb6d;
+        }
+        states [
+            pressed when touch.pressed:{
+                background: #a12bf0;
+            }
+        ]
+    }
+    
+    
+
+}
